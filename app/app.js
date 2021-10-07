@@ -13,6 +13,9 @@ const home = require("./src/routes/home");
 app.set('views', './src/views');
 app.set('view engine', 'pug');
 
+// 정적경로 추가
+app.use(express.static(`${__dirname}/src/public`));
+
 // 라우팅 미들웨어 등록
 // '/' 기본 홈페이지 url로 들어오면 home 라우팅으로 가라
 app.use('/', home);
