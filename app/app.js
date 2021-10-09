@@ -2,6 +2,8 @@
 // 모듈
 const express = require('express');
 const app = express();
+// const bodyParser = require("Body-Parser");
+
 
 // 라우팅
 const home = require("./src/routes/home");
@@ -15,6 +17,14 @@ app.set('view engine', 'pug');
 
 // 정적경로 추가
 app.use(express.static(`${__dirname}/src/public`));
+
+
+// body=poser 미들웨어 등록
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+
+
+
 
 // 라우팅 미들웨어 등록
 // '/' 기본 홈페이지 url로 들어오면 home 라우팅으로 가라

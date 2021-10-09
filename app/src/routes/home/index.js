@@ -27,8 +27,9 @@ const ctrl = require('./home.ctrl.js');
 
 // '/'로 접속하면 home.ctrl 컨트롤러js로 가서 hello 함수를 실행해라
 // '/login'로 접속하면 home.ctrl 컨트롤러js로 가서 login 함수를 실행해라
-router.get('/', ctrl.hello);
-router.get('/login', ctrl.login);
+router.get('/', ctrl.output.hello);
+router.get('/login', ctrl.output.login);
+router.post('/login', ctrl.process.login);
 
 // 반드시 router라는 명으로 exports 해야 함.
 module.exports = router;
