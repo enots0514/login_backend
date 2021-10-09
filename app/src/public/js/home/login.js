@@ -22,9 +22,22 @@ function login(){
       body: JSON.stringify(req)
   })
     .then((res) => res.json())
-    .then( (v) => console.log(v));
-    // 파라미터가 동일한 경우에는 생략도 가능하다.
+    .then( (v) => {
+    
+    //  console.log(v)
+     // 파라미터가 동일한 경우에는 생략도 가능하다.
     // .then(console.log);
+
+        if (v.success) {
+            location.href= "/";
+        } else {
+            alert(v.msg);
+        }
+     })
+       .catch( (err) => {
+          console.error(new Error("로그인 중 에러 발생함")) ;
+        // alert((Error("로그인 중 에러 발생함"))) ;
+       });    
 }
 
 // 위에 headers에서 s를 빼고 써서 오류가 발생했었음.
