@@ -1,6 +1,8 @@
 
 
+// 데이터가 담긴 모델 가져오기
 
+const UserStorage = require('../../models/UserStorage');
 
 
 
@@ -51,12 +53,13 @@ const output = {
     }
 };
 
-
+/* 모델로 데이터를 넘김.
 // 로그인 인증을 위한 더미 데이터 만들기 (테스트용)
 const users = {
     id: ["sphinx", "aattitude", "비주얼"],
     pwd: ["1234", "12345", "123456"]
 };
+*/
 
 // post 메소드를 위해 추가한 컨트롤러 함수
 const process = {
@@ -67,23 +70,59 @@ const process = {
    
      const id = req.body.id;
      const pwd = req.body.pwd;
+
+    /*
+    // UserStorage 클라스를 활용해 인스턴스를 생성하는 방법 모델 UserSorage.js 1번 방법 
+    const userStorage = new UserStorage();
+    console.log(userStorage.users);
+    */
+
+    /*
+     // UserStorage의 static(정적메소드)를 활용해 users 객체를 바로 불러오는 방법 모델 UserSorage.js 2번 방법 
+    console.log(UserStorage.users);
+    */
+
+    //UserStorage의 static(정적메소드)를 활용하면서 users 객체를 은닉화(#users) 하고 
+    // 은닉화한 #users를 부르는 함수를 정적 메소드로 추가해 불러오는 3번 방법
+    // 여기에 모델 부분 UserStorage.js에 reduce 함수를 활용해 필요한 값을 순회해서 가져오는 것 추가함
+    // console.log(UserStorage.getUsers('id', 'pwd')); 
+
+    const users = UserStorage.getUsers('id', 'pwd');
+
     //  console.log(id, pwd);    
 
-        if(users.id.includes(id)){
-           const idx = users.id.indexOf(id);
-           if(users.pwd[idx] === pwd) {
-               return res.json({
-                   success: true,
-               });
-           }
-        }
-         
-       return res.json({
-         success:false,
-         msg:"로그인에 실패하셨습니다.",
-          });           
-       
-    }
+    //     if(users.id.includes(id)){
+    //        const idx = users.id.indexOf(id);
+    //        if(users.pwd[idx] === pwd) {
+    //            return res.json({
+    //                success: true,
+    //            });
+    //        }
+    //     }         
+    //    return res.json({
+    //      success:false,
+    //      msg:"로그인에 실패하셨습니다.",
+    //       });           
+    // 위 코드를 response 객체를 만들어 아래처럼 정리함
+   
+    /* 데이터 처리 관련이므로 따로 다른 파일로 빼서 작성함
+
+    */
+             const response = {};
+          if(users.id.includes(id)){
+            const idx = users.id.indexOf(id);
+            if(users.pwd[idx] === pwd) {
+               response.success = true;
+               return res.json(response);               
+            }
+         }
+                  
+             response.success = false;
+             response.msg = "로그인에 실패하셨습니다.";
+             return res.json(response);
+    
+            
+     } 
 };
 
 module.exports = {
