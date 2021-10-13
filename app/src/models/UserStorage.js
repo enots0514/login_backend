@@ -1,3 +1,4 @@
+'use strict';
 
 /* 1) 클라스를 활용해 컨트롤러 함수에서 인스턴스를 불러와 활용하는 방법 
 class UserStorage {
@@ -74,21 +75,54 @@ class UserStorage {
       }, {});
     //   console.log(newUsers);
       return newUsers;
-   }
+    };
     /*
      reduce((초기값, 배열요소값) => { 함수}, 초기값 대체 ) 해서 배열로 담음
     ...fields 모든 매개변수를 fields로 받아서 
-    초기값은 {빈객체}로 하고 매개변수('id', 'pwd' 등)를 field로 받아서 모든 데이터를 순회함
+    초기값(newUser)은 {빈객체}로 하고 매개변수('id', 'pwd' 등)를 field로 받아서 모든 데이터를 순회함
     이때 원래 객체의 매개변수(field)가 있다면 (여기서는 id, pwd 등을 받음)
-    이 매개변수 값을 순회해서 값을 배열로 담는다.
-    이를  newUsers에 초기값으로 설정한 빈객체{}에 받은 매개변수와 순회한 매개변수 값을 객체형식으로 반환한다.
+    키는 newUser[field]로,  값은 users[field]로 해서 (필드 키를 순회해서 값을 배열로 담는다.)
+    이를  newUsers에 초기값으로 설정한 빈객체{}에 담는다.
+    (받은 매개변수와 순회한 매개변수 값을 객체형식으로 반환한다.)
     즉, newUsers에는 { field : [ field를 순회한 값],
                       field : [ field를 순회한 값]} 으로 담기게 된다. 
+    이후 return newUser; 를 통해 id 필드로 순회한 결과인 위의 객체를 초기값으로 돌려주어
+    이 초기값에 이후 존재하는 필드(여기서는 pwd 매개변수)를 같은 방식으로 키, 값 형태로 추가한다. 
 
     만약에 초기값을 [빈배열]로 설정하면  
     newUsers에는 [ field : [ field를 순회한 값],
                       field : [ field를 순회한 값] ] 이렇게 배열이 담기게 된다.                  
    */
+
+     static getUserInfo(id) {
+       const users = this.#users;
+       const idx = users.id.indexOf(id);
+      //  console.log(`idx => ${idx}`);
+      //  indexOf에서 O는 대문자임(주의 요망)
+       const userKeys = Object.keys(users);
+       //users 객체의 키값들만 리스트로 만듬 // ==> [id, pwd, name]
+       /*
+        이 키값(userKeys)이 담긴 배열을 reduce 함수에 의해 초기값(newUser)은 빈객체로 설정하고
+        이후 info에 [id, pwd, name]이 순차적으로 들어감.
+        newUser[info]가 키가 되고 users[info][idx]의 값이 값으로 들어가는 객체가 
+        {id : [ ]  }
+        return newUser에 의해 순회됨.
+       */
+       const userInfo = userKeys.reduce((newUser, info) => {
+        newUser[info] = users[info][idx];
+        // console.log(`newUserINfo => ${users[info]}`)
+        // console.log(`newUserINfoIdx => ${users[info][idx]}`)
+        return newUser;
+    }, {});
+       
+      //  const userInfo = Object.keys(users).reduce((newUser, info) => {
+      //        newUser[info] = users[info][idx];
+      //        return newUser;
+      //    }, {});
+        // console.log(`userInfo => ${userInfo}`);
+        // console.dir(userInfo);
+         return userInfo;
+     };                   
  }
 
 

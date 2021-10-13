@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+   <h1>TESTing</h1>
+
+   <p class="show"></p>
+
+  <script>
+    
+class Person{
+
+constructor(name){
+   this.age = name;
+ }
+
+   sayHi(){
+       console.log(`hi, ${this.age}`);
+   }
+}
+
+const me = new Person('sphinx');
+
+console.log(me.age);
+console.log(me.sayHi());
+
+  </script>
+</body>
+</html>

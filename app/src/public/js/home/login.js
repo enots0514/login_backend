@@ -23,7 +23,7 @@ function login(){
   })
     .then((res) => res.json())
     .then( (v) => {
-    
+      //  console.dir(v)
     //  console.log(v)
      // 파라미터가 동일한 경우에는 생략도 가능하다.
     // .then(console.log);
