@@ -57,6 +57,9 @@ class UserStorage {
          // name 필드를 추가함.
      };  
  
+     /* 이 부분은 /21/ 에 의해 삭제함. 
+     아래  static getUserInfo(id) 함수로 리팩토링함.
+
    static getUsers(...fields){
     //    console.log(filelds)
       const users = this.#users;
@@ -76,6 +79,8 @@ class UserStorage {
     //   console.log(newUsers);
       return newUsers;
     };
+
+    */
     /*
      reduce((초기값, 배열요소값) => { 함수}, 초기값 대체 ) 해서 배열로 담음
     ...fields 모든 매개변수를 fields로 받아서 
@@ -94,6 +99,7 @@ class UserStorage {
                       field : [ field를 순회한 값] ] 이렇게 배열이 담기게 된다.                  
    */
 
+                       
      static getUserInfo(id) {
        const users = this.#users;
        const idx = users.id.indexOf(id);
