@@ -1,21 +1,29 @@
 
 
 const id = document.querySelector('#id');
+const name = document.querySelector('#name');
 const pwd = document.querySelector('#pwd');
-const loginBtn = document.querySelector('button');
+const confirmPwd = document.querySelector('#confirm-pwd');
+const registerBtn = document.querySelector('button');
 
-loginBtn.addEventListener('click', login);
 
-function login(e){
+registerBtn.addEventListener('click', register);
+
+
+function register(e){
     // console.log(id.value);
     e.preventDefault();
    const req = {
        id : id.value,
+       name : name.value,
        pwd : pwd.value,
+       confirmPwd : confirmPwd.value,
    };
+//    console.log(req);
     //  console.log(req, JSON.stringify(req));
 
-  fetch('/login', {
+    
+  fetch('/register', {
       method: "POST",
       headers: {
           "Content-Type": "application/json"
@@ -30,15 +38,16 @@ function login(e){
     // .then(console.log);
 
         if (v.success) {
-            location.href= "/";
+            location.href= "/login";
         } else {
             alert(v.msg);
         }
      })
        .catch( (err) => {
-          console.error(new Error("로그인 중 에러 발생함")) ;
+          console.error(new Error("회원가입 중 에러 발생함")) ;
         // alert((Error("로그인 중 에러 발생함"))) ;
-       });    
+       });
+           
 }
 
 // 위에 headers에서 s를 빼고 써서 오류가 발생했었음.
