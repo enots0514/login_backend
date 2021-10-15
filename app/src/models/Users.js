@@ -9,6 +9,7 @@ const UserStorage = require("./UserStorage");
 class User {
     constructor(body){
         this.body = body;
+        // this.속성 = 속성값
     }
  
 /* home.ctrl.js 즉, 라우트에 있는 컨트롤러 함수에서 const user = new User(req.body);는
@@ -71,6 +72,11 @@ class User {
     //   console.log(`아이이3body => ${this.body.id} , ${this.body.pwd}  `)
       return {success: false, msg: "존재하지 않는 아이디입니다."};
          // 첫 if문에 걸림. 아이디가 존재하지 않음.
+    }
+
+    register(){
+      const response = UserStorage.save(this.body);
+      return response;
     }
 }
 

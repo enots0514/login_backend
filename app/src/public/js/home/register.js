@@ -13,11 +13,21 @@ registerBtn.addEventListener('click', register);
 function register(e){
     // console.log(id.value);
     e.preventDefault();
+  // 회원가입 시 아이디란이 비워있으면 안 되므로  
+  if(!id.value) return alert("아이디를 입력해주세요");
+  // 비밀번호를 제대로 2번 똑같이 작성했는지 확인
+  if(pwd.value !== confirmPwd.value){
+      return alert("비밀번호가 일치하지 않습니다.");
+  }  
+
    const req = {
        id : id.value,
        name : name.value,
-       pwd : pwd.value,
-       confirmPwd : confirmPwd.value,
+       pwd : pwd.value
+
+    //    confirmPwd : confirmPwd.value,
+    // 비밀번호 확인이므로 서버에 보낼 필요 없이 
+    // 회원가입 시 비밀번호를 제대로 똑같이 작성했는지만 구분하면 된다
    };
 //    console.log(req);
     //  console.log(req, JSON.stringify(req));

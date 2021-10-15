@@ -128,7 +128,17 @@ class UserStorage {
         // console.log(`userInfo => ${userInfo}`);
         // console.dir(userInfo);
          return userInfo;
-     };                   
+     };    
+     
+     // 모델/users.js의 register()에서 저장한 this.body를 userInfo로 받는다.
+     static save(userInfo){
+       const users = this.#users;
+       users.id.push(userInfo.id);
+       users.name.push(userInfo.name);
+       users.pwd.push(userInfo.pwd);
+        //  console.log(users)
+        return {success: true};
+     }
  }
 
 
