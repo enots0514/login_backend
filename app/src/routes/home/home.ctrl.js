@@ -73,9 +73,14 @@ const users = {
 
 // post 메소드를 위해 추가한 컨트롤러 함수
 const process = {
-    login : (req, res) => {
+    // 27에서 async 추가 / await는 async 함수에서만 가능하므로 (async 위치 주의)
+    login : async (req, res) => {
        const user = new User(req.body);
-       const response = user.login();
+    //    const response = user.login();
+    // 27 프로미스에서 수정함
+    const response = await user.login();
+    // 모델 User.js에서 login()함수가 await로 시간이 필요하므로
+    // 라우트를 처리하는 함수 역시 시간이 필요하다
 
     //    console.log(response); 체크 부분
        return res.json(response);

@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* 1) 클라스를 활용해 컨트롤러 함수에서 인스턴스를 불러와 활용하는 방법 
 class UserStorage {
@@ -47,16 +47,25 @@ class UserStorage {
  }
 */
 
+// 데이터베이스의 파일을 불러오기 위해 fs 모듈이 필요함
+// const fs = require("fs");
+
+const fs = require("fs").promises;
+// fs모듈도 지원하는 프로미스 사용하기
+
 // 3번 방법에 추가함
- class UserStorage {
-    
+//  class UserStorage {
+// 위 문구만 아래 코드에 너무 떨어져 있어서 아래쪽으로 위치 이동함 
+
+  /* 이 부분은 /26/ 데이터 파일로 저장하기에 의해 databasw/nabi/users.json으로 옮김 
     static #users = {
          id: ["sphinx", "aattitude", "비주얼"],
          pwd: ["1234", "12345", "123456"],
          name:["스핑크스", "애티튜드", "visual"]
          // name 필드를 추가함.
      };  
- 
+  */
+
      /* 이 부분은 /21/ 에 의해 삭제함. 
      아래  static getUserInfo(id) 함수로 리팩토링함.
 
@@ -99,47 +108,130 @@ class UserStorage {
                       field : [ field를 순회한 값] ] 이렇게 배열이 담기게 된다.                  
    */
 
-                       
-     static getUserInfo(id) {
-       const users = this.#users;
-       const idx = users.id.indexOf(id);
-      //  console.log(`idx => ${idx}`);
-      //  indexOf에서 O는 대문자임(주의 요망)
-       const userKeys = Object.keys(users);
-       //users 객체의 키값들만 리스트로 만듬 // ==> [id, pwd, name]
-       /*
-        이 키값(userKeys)이 담긴 배열을 reduce 함수에 의해 초기값(newUser)은 빈객체로 설정하고
-        이후 info에 [id, pwd, name]이 순차적으로 들어감.
-        newUser[info]가 키가 되고 users[info][idx]의 값이 값으로 들어가는 객체가 
-        {id : [ ]  }
-        return newUser에 의해 순회됨.
-       */
-       const userInfo = userKeys.reduce((newUser, info) => {
-        newUser[info] = users[info][idx];
-        // console.log(`newUserINfo => ${users[info]}`)
-        // console.log(`newUserINfoIdx => ${users[info][idx]}`)
-        return newUser;
-    }, {});
+// class UserStorage {                     
+//      static getUserInfo(id) {
+//       //  const users = this.#users;
+//       // 데이터를 따로 database에 저장함
+//       // 따라서 아래 fs모듈로 불러옴
+//       // 26 데이터 불러오기에서 추가함
+//       // fs.readFile("./") 이 위치는 app.js(메인파일)가 있는 위치를 가리킴(주의 요망)
+//       // UserStorage.js가 있는 위치가 아니라 app.js 위치를 기본으로 함.
+//        fs.readFile("./src/databases/users.json", (err, data) => {
+//          if(err) throw err;
+//         //  console.log(JSON.parse(data))
+//          //json 파일이므로 파싱해야 함
+//           const users = JSON.parse(data);
+
+//           const idx = users.id.indexOf(id);
+//            const userKeys = Object.keys(users);
+//            const userInfo = userKeys.reduce((newUser, info) => {
+//             newUser[info] = users[info][idx];
+//             return newUser;
+//         }, {});
+                     
+//              return userInfo;
+//          });
+//       }
+//       /* 26 fs 모듈에 의해 scope를 고려해 fs 안으로 이동함.
+//        const idx = users.id.indexOf(id);
+//       //  console.log(`idx => ${idx}`);
+//       //  indexOf에서 O는 대문자임(주의 요망)
+//        const userKeys = Object.keys(users);
+//        //users 객체의 키값들만 리스트로 만듬 // ==> [id, pwd, name]
        
-      //  const userInfo = Object.keys(users).reduce((newUser, info) => {
-      //        newUser[info] = users[info][idx];
-      //        return newUser;
-      //    }, {});
-        // console.log(`userInfo => ${userInfo}`);
-        // console.dir(userInfo);
-         return userInfo;
-     };    
-     
-     // 모델/users.js의 register()에서 저장한 this.body를 userInfo로 받는다.
-     static save(userInfo){
-       const users = this.#users;
-       users.id.push(userInfo.id);
-       users.name.push(userInfo.name);
-       users.pwd.push(userInfo.pwd);
-        //  console.log(users)
-        return {success: true};
-     }
- }
+//         // 이 키값(userKeys)이 담긴 배열을 reduce 함수에 의해 초기값(newUser)은 빈객체로 설정하고
+//         // 이후 info에 [id, pwd, name]이 순차적으로 들어감.
+//         // newUser[info]가 키가 되고 users[info][idx]의 값이 값으로 들어가는 객체가 
+//         // {id : [ ]  }
+//         // return newUser에 의해 순회됨.
+       
+//        const userInfo = userKeys.reduce((newUser, info) => {
+//         newUser[info] = users[info][idx];
+//         // console.log(`newUserINfo => ${users[info]}`)
+//         // console.log(`newUserINfoIdx => ${users[info][idx]}`)
+//         return newUser;
+//     }, {});
+       
+//       //  const userInfo = Object.keys(users).reduce((newUser, info) => {
+//       //        newUser[info] = users[info][idx];
+//       //        return newUser;
+//       //    }, {});
+//         // console.log(`userInfo => ${userInfo}`);
+//         // console.dir(userInfo);
+//          return userInfo;
+//      };    
+//    */
+
+//      // 모델/users.js의 register()에서 저장한 this.body를 userInfo로 받는다.
+//      static save(userInfo){
+//       //  const users = this.#users;
+//        users.id.push(userInfo.id);
+//        users.name.push(userInfo.name);
+//        users.pwd.push(userInfo.pwd);
+//         //  console.log(users)
+//         return {success: true};
+//      }
+//  }
+
+// 위 코드를 다시 프로미스로 변환함.
+// 기존 설명은 위를 참조하고 코드를 심플하게 보기 위해 기존 설명을 삭제함
+
+ class UserStorage {   
+  
+  static #getUserInfoFunc(data, id){
+    const users = JSON.parse(data);
+        const idx = users.id.indexOf(id);
+        const userKeys = Object.keys(users);
+        const userInfo = userKeys.reduce((newUser, info) => {
+           newUser[info] = users[info][idx];
+           return newUser;
+       }, {});
+          // console.log(userInfo);          
+            return userInfo;
+  }
+  
+  static getUserInfo(id) {
+   
+  //  console.log(fs.readFile("./src/databases/users.json"));
+  // Promise { <pending> } 반환한다.
+
+  // fs모듈로 받아온 값을 반환한다.
+ return fs
+    .readFile("./src/databases/users.json")
+    .then((data) => {
+        
+       /* 아래 코드를 r가독성을 위해 은닉화된 함수로 전환
+         private한 객체나 함수는 항상 맨 위에 놓음(코드 컨벤션임)
+        const users = JSON.parse(data);
+        const idx = users.id.indexOf(id);
+        const userKeys = Object.keys(users);
+        const userInfo = userKeys.reduce((newUser, info) => {
+           newUser[info] = users[info][idx];
+           return newUser;
+       }, {});
+          // console.log(userInfo);          
+            return userInfo;
+        */
+
+           return this.#getUserInfoFunc(data, id); 
+        })
+        // .catch((err) => { console.error(err) });
+        // 매개변수가 동일하면 생략 가능함
+        .catch(console.error);
+    }
+        
+   
+  
+
+  static save(userInfo){
+  
+    users.id.push(userInfo.id);
+    users.name.push(userInfo.name);
+    users.pwd.push(userInfo.pwd);
+     //  console.log(users)
+     return {success: true};
+  }
+}
 
 
 module.exports = UserStorage;
