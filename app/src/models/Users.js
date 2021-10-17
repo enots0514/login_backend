@@ -112,9 +112,24 @@
       return {success: false, msg: "존재하지 않는 아이디입니다."};
     }
 
-    register(){
-      const response = UserStorage.save(this.body);
+    /*
+    async register(){
+      const response = await UserStorage.save(this.body);
+      // 역시 저장하는데 시간이 필요하므로 await 추가함 28에서
       return response;
+    }
+    */
+    // try catch 추가
+    // UserStorage.js 파일에서 회원가입 및 save 함수가 결국 
+    // async register()안에 있으므로 여기서 try catch로 에러처리를 하는 게 심플하다
+    async register(){
+      try{
+        const response = await UserStorage.save(this.body);        
+        return response;
+      }
+       catch(err) { 
+         return {success:false, msg:err };
+       }
     }
 }
 

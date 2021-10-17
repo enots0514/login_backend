@@ -220,19 +220,94 @@ const fs = require("fs").promises;
         .catch(console.error);
     }
         
-   
-  
+    // 28에서 static save(userInfo)를 활용하기 위해 복원함
+    // 그러면서 fs 모듈을 사용해야 하므로 전환함
 
-  static save(userInfo){
-  
+   static #getUsersFuc(data, isAll, fields){
+     const users = JSON.parse(data);
+     //버퍼 데이터를 파싱해서 받을 있는 데이터로 전환해 users 변수에 담음
+     // 이 프라이빗 함수는 원래 아래 static getUsers(...fields) 함수 안에 있는 코드를 빼온 것임을 상기하자
+    
+    if(isAll) return users;
+    // isAll이 true이면 바로 리턴함. /save 함수 수정하면서 추가함
+     const newUsers = fields.reduce((newUser, field) => {
+      if(users.hasOwnProperty(field)) {
+          newUser[field] = users[field];             
+      }          
+         return newUser;         
+    }, {});
+       return newUsers;
+  }
+   
+
+    // static getUsers(...fields){
+      static getUsers(isAll, ...fields){
+        // 아래 저장하는 함수에서 await this.getUsers(true) true를 사용하기 위해 isAll 매개변수 추가함
+        // const users = this.#users;
+      return fs.readFile("./src/databases/users.json")
+                .then((data) => {
+                  // 여기 data는 버퍼 데이터이므로 파싱이 필요함(위 프라이빗 함수에서 처리)
+                  return this.#getUsersFuc(data, isAll, fields);
+                })
+                .catch(console.error);
+
+      /*#getUsersFuc() 프라이빗 함수로 바꿈
+        const newUsers = fields.reduce((newUser, field) => {
+          if(users.hasOwnProperty(field)) {
+              newUser[field] = users[field];             
+          }          
+             return newUser;         
+        }, {});
+           return newUsers;
+      }
+     */
+    }
+
+  static async save(userInfo){
+ 
+    /* 28에 의해 삭제함 / 데이터를 database 폴더에 json으로 저장했으므로
+      회원 가입하는 데이터도 그쪽에 저장되어야 하므로
     users.id.push(userInfo.id);
     users.name.push(userInfo.name);
     users.pwd.push(userInfo.pwd);
      //  console.log(users)
      return {success: true};
-  }
-}
-
+     */
+  //  fs.writeFile("저장할 경로", 저장할 데이터)
+  //  const data = "a";
+  // 회원명단이 있는 user.json에 기존 자료가 사라지고 새 데이터만 저장되므로
+  // 기존 회원명단 데이터를 불러온 후에 거기에 입력한 뉴회원데이터를 더해서 저장해야 한다.
+  // 이를 위해 /21/에 의해 리팩토링되면서 삭제했던 함수를 복원해서 활용함
+    // const data = await this.getUsers("id", "pwd", "name");
+    // console.log(users);
+    // 여기서 promise <pending> 이 나온다. 
+    // 즉, 아직 프로미스가 결과값을 받지 못 한 상태이므로 await를 추가한다
+    // console.log(users);
+    // const data = await this.getUsers("id", "pwd", "name");
+    // 위에서 모든 데이터를 받을 경우에는 true라고 쓰면 됨.
+    const users = await this.getUsers(true);
+    // console.log(data);
+    if(users.id.includes(userInfo.id)){
+      // 회원가입한 데이터 아이디가 기존 저장된 유저명단 아이디에 있으면 에러 반환
+      // console.log(users); // 기존 회원리스트
+      // console.log(userInfo); // 새로 입력한 값
+      //  return new Error("이미 존재하는 아이디입니다.");
+       // 이러면 models/Users.js의 async register()의 try catch에서 try 안(response)으로 들어간다.
+       // 따라서 throw를 해줘야 catch(err) 로 들어가게 된다.(**중요)
+      //  throw Error("이미 존재하는 아이디입니다.");
+       // 그런데 위 처럼 하면 err가 객체로 들어간다.
+       // 따라서 그냥 문자열로 throw하면 스트링으로 받는다. (** 사소하지만 중요함)
+       throw ("이미 존재하는 아이디입니다.");
+     }
+     // 회원가입한 데이터 아이디가 기존 저장된 유저명단 아이디에 없으면 저장해라
+     users.id.push(userInfo.id);
+     users.name.push(userInfo.name);
+     users.pwd.push(userInfo.pwd);
+    fs.writeFile("./src/databases/users.json", JSON.stringify(users));
+  // JSON.stringify(data) 서버에 회원명단을 저장하는 것이므로 json화 한다.
+     return {success: true }; 
+   }
+ }
 
 module.exports = UserStorage;
 
